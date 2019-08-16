@@ -1,17 +1,20 @@
 
-const test = () => console.log('testing the lib.js file');
-
-export default test;
 
 
+/* 
+Defaults
+{
+  selector: css selector for your dom nodes,
+  delay: miliseconds of delay,
+  threshold: number form 0 to 1 that is a percent of the element that should be in the viewport before animating,
+  rootMargin: four px values that adjust the margin of the intersection window,
+  root: CSS selector to define the scrolling container, defaults to window,
+  once: determines whether the classes get applied once or repeatedly, defaults to true,
+}
+*/
 
 
-// intersectionObserver testing
-
-// TODO: Build this as a class that holds all the variables, methods and data inside it
-
-
-function observeThis({selector = '[data-observe]', delay = 100, threshold = 0, rootMargin = '0px 100px -100px 100px', root = null, once = false} = {}) {
+function ioCascade({selector = '[data-observe]', delay = 100, threshold = 0, rootMargin = '0px 100px -100px 100px', root = null, once = false} = {}) {
   // Check if intersection observer is supported
   const iO = "IntersectionObserver" in window; /* true if supported */
   if ( !iO ) {
@@ -114,20 +117,14 @@ function observeThis({selector = '[data-observe]', delay = 100, threshold = 0, r
   }, options);
 
 
-  const elements = [...document.querySelectorAll(selector)];
+  const elements = Array.prototype.slice.call(document.querySelectorAll(selector));
 
   elements.forEach((element) => intersectionObserver.observe(element) );
 
 };
 
-observeThis({
-  selector: '[data-observe]',
-  delay: 100,
-  threshold: 1,
-  rootMargin: '0px 100px 0px 100px',
-  root: undefined,
-  once: true
-});
+
+export default ioCascade;
 
 
 /*

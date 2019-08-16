@@ -1,11 +1,11 @@
-# js-library-template
-### A template built for creating javascript libraries and general tinkering.
+# I O Cascade
+### A lil' js lib that detects when elements appear in view and staggers the animations
 
 It uses gulp, scss, browserSync, Rollup and buble.
 
 ### Folder structure
 **_src/** - is where you work  
-**dev/** - is where the browserSync server runs from  
+**docs/** - is where the browserSync server runs from  
 **dist/** - contains the processed js files  
 
 

@@ -1,1 +1,0 @@
-var libtemplate=function(){"use strict";return function(){return console.log("testing the lib.js file")}}();
