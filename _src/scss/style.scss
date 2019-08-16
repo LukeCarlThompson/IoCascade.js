@@ -22,7 +22,7 @@
   }
 }
 
-[data-observe] {
+[data-io] {
   // animation-play-state: paused;
   &.splat {
     animation: splat 1000ms linear backwards;
