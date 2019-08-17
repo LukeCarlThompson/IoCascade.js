@@ -16,14 +16,13 @@ function ioCascade({
   delay = 100,
   threshold = 0,
   rootMargin = "0px 100px -100px 100px",
-  root = null,
-  once = false,
+  root = null
 } = {}) {
   // Check if intersection observer is supported
   const iO = "IntersectionObserver" in window; /* true if supported */
   if (!iO) {
     console.log(
-      "observeThis.js says intersection Observer is not supported in your browser"
+      "The javascript feature intersection Observer is not supported in your browser. We suggest upgrading to a more modern browser for a better experience."
     );
     document.querySelectorAll(selector).forEach(item => {
       item.removeAttribute("data-io");
@@ -38,7 +37,7 @@ function ioCascade({
 
 const isChild = el => el.getAttribute("data-io") === "child";
 
-  // Function to animate the first item from the array if ti exists and then animate the next one after
+  // Function to animate the first item from the array if it exists and then animate the next one after
   const animateNext = queue => {
     if (queue.length >= 1 && ready) {
       ready = false;
@@ -66,7 +65,7 @@ const isChild = el => el.getAttribute("data-io") === "child";
       const el = entry.target;
 
       // Check if element has children and if it does then add them all to the array
-      if (entry.isIntersecting && !isChild(el)) {
+      if (entry.intersectionRatio >= threshold && !isChild(el)) {
         const children = el.querySelectorAll('[data-io="child"]');
 
         if (children.length) {
@@ -79,10 +78,7 @@ const isChild = el => el.getAttribute("data-io") === "child";
           queue.push(el);
           animateNext(queue);
         }
-      }
-
-      // Remove from observer if options.once is true
-      if (entry.isIntersecting && once) {
+        // Remove element from observer
         observer.unobserve(entry.target);
       }
     }
@@ -103,8 +99,6 @@ TODO: Check if an item that's out of view has a timer running and reset the time
 
 TODO: Use a data-threshold attribute to set the threshold for each individual item
 
-TODO: Find a way to avoid thrashing when an animation moves an item in or out of the viewport
-
-TODO: Set thresholds for 0 and 1, then detect if the element is at the top or the bottom of the screen before running function
+TODO: Fire custom event when each element enters the viewport
 
 */

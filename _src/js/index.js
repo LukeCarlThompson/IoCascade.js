@@ -11,5 +11,4 @@ const cascade = new ioCascade({
   threshold: 1,
   rootMargin: '0px 100px 0px 100px',
   root: undefined,
-  once: true
 });
