@@ -14,13 +14,14 @@ Defaults
 
 // Check if an element is fully in the visible viewport before any transform is applied
 const isInViewport = (element) => {
-  element.removeAttribute("data-io");
+  // element.removeAttribute("data-io");
   element.style.transform = "translate3d(0, 0, 0)";
   element.style.transitionDuration = "0s";
   void(element.offsetHeight);
   const rect = element.getBoundingClientRect();
-  element.setAttribute("data-io", "");
+  // element.setAttribute("data-io", "");
   element.style.transform = "";
+  void(element.offsetHeight);
   element.style.transitionDuration = "";
   const html = document.documentElement;
   return (
@@ -32,21 +33,45 @@ const isInViewport = (element) => {
 };
 
 // Check if an element is visible in viewport at all
-function isVisible(element) {
-  element.removeAttribute("data-io");
-  element.style.transform = "translate3d(0, 0, 0)";
-  element.style.transitionDuration = "0s";
-  void(element.offsetHeight);
-  const top = element.getBoundingClientRect().top;
-  const bottom = element.getBoundingClientRect().bottom;
-  element.setAttribute("data-io", "");
-  element.style.transform = "";
-  element.style.transitionDuration = "";
+// function isVisible(element) {
+//   // element.removeAttribute("data-io");
+//   element.style.transform = "translate3d(0, 0, 0)";
+//   element.style.transitionDuration = "0s";
+//   void(element.offsetHeight);
+//   const top = element.getBoundingClientRect().top;
+//   const bottom = element.getBoundingClientRect().bottom;
+//   // element.setAttribute("data-io", "");
+//   element.style.transform = "";
+//   void(element.offsetHeight);
+//   element.style.transitionDuration = "";
+//   const vHeight = (window.innerHeight || document.documentElement.clientHeight);
+//   return (
+//     (top > 0 || bottom > 0) &&
+//     top < vHeight
+//   );
+// }
+
+// Check if element is past threshold before transforms are applied
+function isVisible(el) {
+  el.style.transform = "translate3d(0, 0, 0)";
+  el.style.transitionDuration = "0s";
+  void(el.offsetHeight);
+
+  const elRect = el.getBoundingClientRect();
+
+  el.style.transitionDuration = "";
+  void(el.offsetHeight);
+  el.style.transform = "";
+
   const vHeight = (window.innerHeight || document.documentElement.clientHeight);
-  return (
-    (top > 0 || bottom > 0) &&
-    top < vHeight
-  );
+
+  const elThresholdPos = elRect.top + (elRect.height * 0.5);
+
+  const visible = (elThresholdPos > 0) && elThresholdPos < vHeight;
+
+  console.log('visible', visible)
+
+  return visible;
 }
 
 
@@ -113,54 +138,28 @@ const isChild = el => el.getAttribute("data-io") === "child";
       const entry = entries[i];
       const el = entry.target;
 
-      // Check if element has children and if it does then add them all to the array
-      if (entry.isIntersecting && isVisible(entry.target) && !isChild(el)) {
-        console.log('isIntersecting but isVisible() -->', isVisible(entry.target))
-        const children = el.querySelectorAll('[data-io="child"]');
+      console.log('intersection detected');
 
-        if (children.length) {
+      // Check if element has children and if it does then add them all to the array
+      if (entry.isIntersecting && isVisible(el)) {
+
           queue.push(el);
-          children.forEach(child => {
-            queue.push(child);
-          });
-          // console.log("added children -->", children);
-          // console.log("Queue -->", queue);
           animateNext(queue);
-        } else if(entry.isIntersecting && isVisible(entry.target)) {
-          queue.push(el);
-          // console.log('Queue -->', queue)
-          animateNext(queue);
-        }
-      }
+          console.log('added -->', el);
+          console.log("entry.intersectionRatio", entry.intersectionRatio);
+
+      } else if (!isVisible(el)) {
+        console.log("removed", el);
+        console.log("entry.intersectionRatio", entry.intersectionRatio);
+
+        // remove the active class
+        entry.target.classList.remove("observed-in");
+    }
 
       // Remove from observer if options.once is true
       // if (entry.isIntersecting && once) {
       //   observer.unobserve(entry.target);
       // }
-
-      // Run this as it leaves the viewport
-      if (!once && !entry.isIntersecting && !isVisible(entry.target)) {
-        console.log("entry leaving", entry);
-        console.log("isVisible(entry.target)", isVisible(entry.target));
-        console.log("queue -->", queue);
-
-        // remove the active class
-        entry.target.classList.remove("observed-in");
-
-        // Then remove the data attributes, reflow, then apply them again.
-        // This resets the animation state
-        if (!isChild(entry.target)) {
-          entry.target.removeAttribute("data-io");
-          void entry.target.offsetWidth;
-          entry.target.setAttribute("data-io", "");
-        } else {
-          entry.target.removeAttribute("data-io");
-          void entry.target.offsetWidth;
-          entry.target.setAttribute("data-io", "child");
-        }
-        // Remove item from the array as it leaves the window
-        // queue = queue.filter((item) => entry.target !== item.target);
-      }
     }
   }, options);
 
