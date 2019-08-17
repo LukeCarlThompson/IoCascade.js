@@ -62,7 +62,7 @@ const isChild = el => el.getAttribute("data-io") === "child";
       const itemDelay = nextItem.getAttribute("data-delay") || delay;
 
       timer = setTimeout(() => {
-        nextItem.classList.add("observed-in");
+        nextItem.classList.add("io-in");
         ready = true;
         animateNext(queue);
         console.log('timeout ran')
