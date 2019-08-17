@@ -1,3 +1,21 @@
+/*
+
+TODO: Check if an item that's out of view has a timer running and reset the timer if it does
+
+TODO: Fire custom event when each element enters the viewport
+
+TODO: Package up default CSS
+
+TODO: write some docs
+
+TODO: Test out the fallback for older browsers
+
+*/
+
+
+
+
+
 /* 
 Defaults
 {
@@ -6,7 +24,6 @@ Defaults
   threshold: number form 0 to 1 that is a percent of the element that should be in the viewport before animating,
   rootMargin: four px values that adjust the margin of the intersection window,
   root: CSS selector to define the scrolling container, defaults to window,
-  once: determines whether the classes get applied once or repeatedly, defaults to true,
 }
 */
 
@@ -15,7 +32,7 @@ function ioCascade({
   selector = "[data-io]",
   delay = 100,
   threshold = 0,
-  rootMargin = "0px 100px -100px 100px",
+  rootMargin = "0px 100px 0px 100px",
   root = null
 } = {}) {
   // Check if intersection observer is supported
@@ -44,7 +61,7 @@ const isChild = el => el.getAttribute("data-io") === "child";
       const nextItem = queue.shift();
       const itemDelay = nextItem.getAttribute("data-delay") || delay;
 
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         nextItem.classList.add("observed-in");
         ready = true;
         animateNext(queue);
@@ -92,13 +109,3 @@ const isChild = el => el.getAttribute("data-io") === "child";
 }
 
 export default ioCascade;
-
-/*
-
-TODO: Check if an item that's out of view has a timer running and reset the timer if it does
-
-TODO: Use a data-threshold attribute to set the threshold for each individual item
-
-TODO: Fire custom event when each element enters the viewport
-
-*/
