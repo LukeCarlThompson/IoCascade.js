@@ -2,6 +2,8 @@
 
 TODO: Check if an item that's out of view has a timer running and reset the timer if it does
 
+TODO: Check if an item that has been scrolled out of view is in the queue and remove it if it is. So it doesn't hold up the other animations.
+
 TODO: Fire custom event when each element enters the viewport
 
 TODO: Package up default CSS
