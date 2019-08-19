@@ -12,6 +12,8 @@ TODO: write some docs
 
 TODO: Test out the fallback for older browsers
 
+TODO: Create an option to have an item skip the queue altogether. Or start a new queue from that node.
+
 */
 
 

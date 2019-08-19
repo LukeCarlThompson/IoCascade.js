@@ -8,6 +8,17 @@
   flex-wrap: wrap;
 }
 
+.post-grid {
+  display: flex;
+  flex-wrap: wrap;
+  &__item {
+    flex: 1 1 20%;
+    margin: 10px;
+    height: 100px;
+    background-color: goldenrod;
+  }
+}
+
 .block {
   min-height: 100px;
   min-width: 100px;
