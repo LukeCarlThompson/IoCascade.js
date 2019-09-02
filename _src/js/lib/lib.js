@@ -12,18 +12,15 @@ TODO: write some docs
 
 TODO: Test out the fallback for older browsers
 
-TODO: Create an option to have an item skip the queue altogether. Or start a new queue from that node.
+TODO: Create an option to have an item skip the queue altogether.
 
 */
-
-
-
-
 
 /* 
 Defaults
 {
-  selector: css selector for your dom nodes,
+  selector: css selector for your dom nodes data attribute,
+  classToAdd: class to add to els as they come into view
   delay: miliseconds of delay,
   threshold: number form 0 to 1 that is a percent of the element that should be in the viewport before animating,
   rootMargin: four px values that adjust the margin of the intersection window,
@@ -31,14 +28,24 @@ Defaults
 }
 */
 
-
-function ioCascade({
+function IoCascade({
   selector = "[data-io]",
+  classToAdd = "io-in",
   delay = 100,
   threshold = 0,
   rootMargin = "0px 100px 0px 100px",
-  root = null
+  root = null,
 } = {}) {
+  // Check provided args and set defaults
+  this.selector = selector || "[data-io]";
+  this.bareSelector = selector ? selector.replace(/[\[\].]+/g, "") : "data-io";
+  this.classToAdd = classToAdd || "io-in";
+  this.delay = delay || 100;
+  this.threshold = threshold || 0;
+  this.rootMargin = rootMargin || "0px 100px 0px 100px";
+  this.queue = [];
+  // Remove square brackets and dots from selector
+  const bareSelector = selector.replace(/[\[\].]+/g, "");
   // Check if intersection observer is supported
   const iO = "IntersectionObserver" in window; /* true if supported */
   if (!iO) {
@@ -46,38 +53,35 @@ function ioCascade({
       "The javascript feature intersection Observer is not supported in your browser. We suggest upgrading to a more modern browser for a better experience."
     );
     document.querySelectorAll(selector).forEach(item => {
-      item.removeAttribute("data-io");
+      item.removeAttribute(this.bareSelector);
     });
     return;
   }
 
   let ready = true;
-  let queue = [];
   let timer;
 
-
-const isChild = el => el.getAttribute("data-io") === "child";
+  const isChild = el => el.getAttribute(this.bareSelector) === "child";
 
   // Function to animate the first item from the array if it exists and then animate the next one after
   const animateNext = queue => {
     if (queue.length >= 1 && ready) {
       ready = false;
       const nextItem = queue.shift();
-      const itemDelay = nextItem.getAttribute("data-delay") || delay;
+      const itemDelay = nextItem.getAttribute("data-delay") || this.delay;
 
       timer = setTimeout(() => {
-        nextItem.classList.add("io-in");
+        nextItem.classList.add(this.classToAdd);
         ready = true;
         animateNext(queue);
-        console.log('timeout ran')
       }, itemDelay);
     }
   };
 
   const options = {
     root,
-    threshold,
-    rootMargin,
+    threshold: this.threshold,
+    rootMargin: this.rootMargin,
   };
 
   const intersectionObserver = new IntersectionObserver((entries, observer) => {
@@ -90,14 +94,14 @@ const isChild = el => el.getAttribute("data-io") === "child";
         const children = el.querySelectorAll('[data-io="child"]');
 
         if (children.length) {
-          queue.push(el);
+          this.queue.push(el);
           children.forEach(child => {
-            queue.push(child);
+            this.queue.push(child);
           });
-          animateNext(queue);
-        } else if(entry.isIntersecting) {
-          queue.push(el);
-          animateNext(queue);
+          animateNext(this.queue);
+        } else if (entry.isIntersecting) {
+          this.queue.push(el);
+          animateNext(this.queue);
         }
         // Remove element from observer
         observer.unobserve(entry.target);
@@ -105,11 +109,9 @@ const isChild = el => el.getAttribute("data-io") === "child";
     }
   }, options);
 
-  const elements = Array.prototype.slice.call(
-    document.querySelectorAll(selector)
-  );
+  const elements = Array.prototype.slice.call(document.querySelectorAll(selector));
 
   elements.forEach(element => intersectionObserver.observe(element));
 }
 
-export default ioCascade;
+export default IoCascade;

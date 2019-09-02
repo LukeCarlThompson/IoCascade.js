@@ -1,14 +1,13 @@
-import ioCascade from '../../dist/iocascade.esm.js';
-
-
-console.log('Index.js file 😎');
+import IoCascade from '../../dist/iocascade.esm.js';
 
 
 
-const cascade = new ioCascade({
+
+const cascade = new IoCascade({
   selector: '[data-io]',
+  classToAdd: 'io-in',
   delay: 100,
-  threshold: 1,
+  threshold: 0.5,
   rootMargin: '0px 100px 0px 100px',
-  root: undefined,
+  root: null,
 });
