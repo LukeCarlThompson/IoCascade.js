@@ -1,4 +1,4 @@
-# I O Cascade 💃🕺
+# IoCascade.js 💃🕺
 ### A lil' js lib that detects when elements appear in view and staggers the animations
 
 Use like this (defaults shown).
