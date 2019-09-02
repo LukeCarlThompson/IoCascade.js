@@ -1,6 +1,8 @@
 # IoCascade.js 💃🕺
 ### A lil' js lib that detects when elements appear in view and staggers the animations
 
+Example page at https://lukecarlthompson.github.io/IoCascade.js/
+
 Use like this (defaults shown).
 ``` javascript
 const cascade = new IoCascade({
