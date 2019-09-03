@@ -13,7 +13,7 @@ const cascade = new IoCascade({
   rootMargin: '0px 100px 0px 100px',
   root: null,
 });
-````
+```
 IoCascade detects the first time an element with the ```data-io``` property on it enters the viewport and adds it to a queue.
 
 After a default delay of 100ms it then apply's a class of ```io-in``` to the item and then checks for the next item in the queue. If there is one there (another item has scrolled into view before the animation started) it will wait for the next delay and repeat.
